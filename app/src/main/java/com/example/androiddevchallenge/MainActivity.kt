@@ -88,7 +88,7 @@ fun DogList(navController: NavHostController) {
                 .verticalScroll(rememberScrollState())
         ) {
             TheDogs.map {
-                DogListItem(dog = it, onClick = { navController.navigate("detail")})
+                DogListItem(dog = it, onClick = { navController.navigate("detail") })
             }
         }
     }
@@ -96,10 +96,12 @@ fun DogList(navController: NavHostController) {
 
 @Composable
 fun DogListItem(
-    dog: Pupper, onClick: () -> Unit
+    dog: Pupper,
+    onClick: () -> Unit
 ) {
     Card(
-        elevation = 2.dp, backgroundColor = Color.LightGray, modifier = Modifier
+        elevation = 2.dp, backgroundColor = Color.LightGray,
+        modifier = Modifier
             .fillMaxWidth()
             .padding(2.dp)
             .clickable(onClick = onClick)
@@ -108,13 +110,13 @@ fun DogListItem(
             DogCircle()
             Column {
                 Text(
-                    text = dog.name, fontWeight = FontWeight.Bold, modifier = Modifier
+                    text = dog.name, fontWeight = FontWeight.Bold,
+                    modifier = Modifier
                         .padding(5.dp)
                 )
                 Text(text = dog.breed, modifier = Modifier.padding(5.dp))
             }
         }
-
     }
 }
 
@@ -123,7 +125,6 @@ fun DogDetail(dog: Pupper) {
     Surface {
         Column(modifier = Modifier.fillMaxWidth()) {
             Card {
-
             }
             Spacer(modifier = Modifier.height(10.dp))
             Card {
