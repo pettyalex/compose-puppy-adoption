@@ -26,19 +26,37 @@ data class Pupper(
 
 class PuppySource {
     companion object {
-        private val names: List<String> = listOf("Frank", "Todd")
-        private val ages: List<String> = listOf("1", "2", "3")
+        private val names: List<String> = listOf("Frank", "Todd", "Ed", "Joe", "Jeff")
+        private val nameEnds = listOf("ington", "ward", "bert", "ley")
+        private val ages: List<String> = listOf("1", "2", "3", "4", "5")
+        private val breeds = listOf("Pug", "Retriever", "Dachshund")
+        private val descriptions = listOf("He's extremely friendly", "He barks loudly at all hours of the day", "He loves people, but sleeps a lot")
 
         fun GeneratePuppy(): Pupper {
-            return Pupper("Frank", "3", "Male", "Pug", "A picture")
+            return Pupper(
+                name = makeName(),
+                age = makeAge(),
+                gender = "male",
+                breed = makeBreed(),
+                photo = "A picture",
+                description = makeDescription()
+            )
         }
 
-        private fun MakeName(): String {
-            return names.random()
+        private fun makeName(): String {
+            return names.random() + nameEnds.random()
         }
 
         private fun makeAge(): String {
             return ages.random()
+        }
+
+        private fun makeBreed(): String {
+            return breeds.random()
+        }
+
+        private fun makeDescription(): String {
+            return descriptions.random()
         }
     }
     fun getThePuppies(): List<Pupper> {

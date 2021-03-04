@@ -18,7 +18,7 @@ package com.example.androiddevchallenge
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,14 +31,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -51,11 +51,18 @@ import com.example.androiddevchallenge.services.Pupper
 import com.example.androiddevchallenge.services.PuppySource
 import com.example.androiddevchallenge.ui.theme.MyTheme
 
-val TheDogs = listOf(
-    Pupper("Frank", "3", "Male", "Pug", "A picture"),
-    Pupper("Frank", "3", "Male", "Pug", "A picture"),
-    Pupper("Frank", "3", "Male", "Pug", "A picture")
-)
+val TheDogs = (1..40).map { PuppySource.GeneratePuppy() }
+
+fun getDogById(id: String?): Pupper {
+    try {
+        if (id == null) {
+            return PuppySource.GeneratePuppy()
+        }
+        return TheDogs[id.toInt()]
+    } catch (e: Error) {
+        return PuppySource.GeneratePuppy()
+    }
+}
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +82,7 @@ fun MyApp() {
 
     NavHost(navController = navController, startDestination = "list") {
         composable("list") { DogList(navController) }
-        composable("detail") { DogDetail(dog = PuppySource.GeneratePuppy()) }
+        composable("detail/{dogId}") { backStackEntry -> DogDetail(getDogById(backStackEntry.arguments?.getString("dogId"))) }
     }
 }
 
@@ -87,8 +94,8 @@ fun DogList(navController: NavHostController) {
                 .fillMaxHeight()
                 .verticalScroll(rememberScrollState())
         ) {
-            TheDogs.map {
-                DogListItem(dog = it, onClick = { navController.navigate("detail") })
+            TheDogs.mapIndexed { index, dog ->
+                DogListItem(dog = dog, onClick = { navController.navigate("detail/$index") })
             }
         }
     }
@@ -100,7 +107,7 @@ fun DogListItem(
     onClick: () -> Unit
 ) {
     Card(
-        elevation = 2.dp, backgroundColor = Color.LightGray,
+        elevation = 2.dp, backgroundColor = MaterialTheme.colors.surface,
         modifier = Modifier
             .fillMaxWidth()
             .padding(2.dp)
@@ -125,13 +132,13 @@ fun DogDetail(dog: Pupper) {
     Surface {
         Column(modifier = Modifier.fillMaxWidth()) {
             Card {
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            Card {
-                Column {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(fontWeight = FontWeight.ExtraBold, text = dog.name)
+                    Image(painterResource(id = R.drawable.dog_photo), "A dog")
                     Spacer(modifier = Modifier.height(10.dp))
-                    Text(text = dog.breed)
+                    Text(text = "Breed: ${dog.breed}")
+                    Text(text = "Age: ${dog.age}")
+                    Text(text = "Gender: ${dog.gender}")
                     Text(text = dog.description)
                 }
             }
@@ -141,19 +148,7 @@ fun DogDetail(dog: Pupper) {
 
 @Composable
 fun DogCircle() {
-    return Canvas(
-        modifier = Modifier
-            .width(60.dp)
-            .height(60.dp)
-    ) {
-        val canvasWidth = size.width
-        val canvasHeight = size.height
-        drawCircle(
-            color = Color.Blue,
-            center = Offset(x = canvasWidth / 2, y = canvasHeight / 2),
-            radius = size.minDimension / 3
-        )
-    }
+    Icon(painterResource(id = R.drawable.ic_baseline_insert_emoticon_24), "smilie icon", modifier = Modifier.width(60.dp).height(60.dp))
 }
 
 @Preview("Light Theme", widthDp = 360, heightDp = 640)
